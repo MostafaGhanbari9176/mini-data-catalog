@@ -1,0 +1,10 @@
+.venv/
+.vscode/
+poetry.lock
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log

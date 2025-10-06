@@ -1,0 +1,18 @@
+[project]
+name = "mini-data-catalog"
+version = "0.1.0"
+description = "tata test asignment"
+authors = [
+    {name = "MostafaGhanbari9176",email = "godhelot1@outlook.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django (>=5.2.7,<6.0.0)",
+    "djangorestframework (>=3.16.1,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
