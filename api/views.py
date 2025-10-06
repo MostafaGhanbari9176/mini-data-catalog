@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .service import main as MainService
+from rest_framework.request import Request
+from .service import file_parser as FileService, main as MainService
 from .models import ETLNames
 
 
@@ -15,3 +16,14 @@ class FetchETLTables(APIView):
             return Response(
                 {"message": "etl not found"}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+class UploadDataFile(APIView):
+    def post(self, request: Request):
+        file_path = MainService.store_data_file(request)
+        
+        FileService.parse_file(file_path)
+        
+        return Response(
+            {"message": "file uploaded successfully"}, status=status.HTTP_201_CREATED
+        )
