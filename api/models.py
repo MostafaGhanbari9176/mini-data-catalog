@@ -11,8 +11,12 @@ class ETLNames(models.Model):
 
 class TableNames(models.Model):
     name = models.CharField(max_length=255)
-    schema = models.ForeignKey(SchemaNames, on_delete=models.CASCADE)
-    etls = models.ManyToManyField(ETLNames, through="ETLTableRel")
+    schema = models.ForeignKey(
+        SchemaNames, on_delete=models.CASCADE, related_name="tables"
+    )
+    etls = models.ManyToManyField(
+        ETLNames, through="ETLTableRel", related_name="tables"
+    )
 
     class Meta:
         unique_together = (
