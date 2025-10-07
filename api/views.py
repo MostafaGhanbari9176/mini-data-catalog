@@ -26,7 +26,7 @@ class UploadDataFile(APIView):
     def post(self, request: Request):
         file_path = MainService.store_data_file(request)
 
-        FileService.parse_file(file_path)
+        FileService.parse_file.delay(file_path) # type: ignore
 
         return Response(
             {"message": "file uploaded successfully"}, status=status.HTTP_201_CREATED

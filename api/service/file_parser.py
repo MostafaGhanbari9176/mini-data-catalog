@@ -5,19 +5,22 @@ from itertools import islice
 from django.db import transaction
 from api.models import ETLNames, SchemaNames, TableNames, ETLTableRel
 from rest_framework.exceptions import ValidationError
+from celery import shared_task
+from utils import utils
+from django.utils import timezone
 
 CHUNK_SIZE = 1024
 
 
+@shared_task
 def parse_file(file_path: str):
-    print(file_path)
     try:
         if file_path.endswith(".csv"):
             process_csv(file_path)
         elif file_path.endswith(".json"):
             process_json(file_path)
     except:
-        raise ValidationError("Error in parsing file.")
+        utils.app_logger.error(f"{timezone.now()} error on parsing file: {file_path}")
     finally:
         os.remove(file_path)
 
