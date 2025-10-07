@@ -28,8 +28,47 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# DRF
+# Email
+ADMINS = [
+    ('mostafa', 'mostafaghanbari9176@gmail.com'),
+]
+# Use Django's SMTP backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# Postfix server details
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25         
+EMAIL_HOST_USER = 'root'    
+EMAIL_HOST_PASSWORD = '1234'
+EMAIL_USE_TLS = False   
+EMAIL_USE_SSL = False
+
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
+
+
+
+# DRF
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -70,6 +109,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'middlewares.none_2xx_logger_middleware.Non2xxLoggerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
