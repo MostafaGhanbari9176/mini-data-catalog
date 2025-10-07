@@ -23,21 +23,32 @@ def log_in_confirm(request: Request):
     otp: str = serializer.validated_data["otp"]  # type: ignore
     if not otp_is_valid(email, otp):
         raise ValidationError(detail="otp is not valid or expired")
-    
+
     # creating user if user not exists
     UserService.create_user_nx(email)
-    
+
     return generate_token_pair(email)
 
 
 def otp_is_valid(email, otp) -> bool:
-    otp_data = OTP.objects.filter(email=email, otp=otp).order_by("-updated_at").first()
-    if otp_data is None:
+    otp_object = (
+        OTP.objects.filter(email=email, otp=otp, invalidate=False)
+        .order_by("-updated_at")
+        .first()
+    )
+
+    if otp_object is None:
         return False
 
     now = timezone.now()
 
-    return now < otp_data.updated_at + timedelta(minutes=2)
+    valid = now < otp_object.updated_at + timedelta(minutes=2)
+
+    if valid:
+        otp_object.invalidate = True
+        otp_object.save()
+
+    return valid
 
 
 def send_otp(email):
@@ -68,6 +79,7 @@ def store_otp(email: str, otp: str) -> None:
         otp_object = OTP(email=email, otp=otp)
     else:
         otp_object.otp = otp
+        otp_object.invalidate = False
 
     otp_object.save()
 
