@@ -33,11 +33,8 @@ services:
       - backend
 
   app:
-    build:
-      context: .
-      dockerfile: dockerfile.application
+    build: .
     container_name: mini_data_catalog
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
     env_file:
@@ -52,11 +49,9 @@ services:
       - backend
 
   celery:
-    build:
-      context: .
-      dockerfile: dockerfile.celery
+    build: .
     container_name: mini_data_catalog_celery
-    command: celery -A core worker --loglevel=info
+    command: celery -A config worker --loglevel=info
     volumes:
       - .:/app
     env_file:

@@ -14,16 +14,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # cleans up cache to reduce image size
 RUN rm -rf /var/lib/apt/lists/*
 # installing poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-ENV PATH="/root/.local/bin:$PATH"
+RUN pip install poetry
 
 COPY pyproject.toml poetry.lock /app/
 
-RUN poetry install --no-root --no-dev
+RUN poetry install --no-root
 
 COPY . /app/
 
 EXPOSE 8000
 
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-4}
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

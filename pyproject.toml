@@ -5,7 +5,6 @@ description = "tata test asignment"
 authors = [
     {name = "MostafaGhanbari9176",email = "godhelot1@outlook.com"}
 ]
-readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django (>=5.2.7,<6.0.0)",
