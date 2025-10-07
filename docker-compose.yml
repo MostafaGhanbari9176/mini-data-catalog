@@ -41,6 +41,7 @@ services:
     container_name: mini_data_catalog
     volumes:
       - .:/app
+      - shared_uploads:${TMP_FILE_PATH}
     env_file:
       - .env
     ports:
@@ -59,6 +60,7 @@ services:
     container_name: mini_data_catalog_celery
     volumes:
       - .:/app
+      - shared_uploads:${TMP_FILE_PATH}
     env_file:
       - .env
     depends_on:
@@ -68,6 +70,7 @@ services:
 
 volumes:
   postgres_data:
+  shared_uploads:
 
 networks:
   backend:
