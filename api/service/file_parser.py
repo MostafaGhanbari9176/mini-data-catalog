@@ -4,7 +4,6 @@ import json
 from itertools import islice
 from django.db import transaction
 from api.models import ETLNames, SchemaNames, TableNames, ETLTableRel
-from rest_framework.exceptions import ValidationError
 from celery import shared_task
 from utils import utils
 from django.utils import timezone

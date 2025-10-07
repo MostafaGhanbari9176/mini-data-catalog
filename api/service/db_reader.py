@@ -23,7 +23,7 @@ def read_data_from_db(request: Request):
         # then working with db in the background
         read_and_store_data.delay(input)  # type: ignore
     except:
-        raise ValidationError("error on connecting into db source")
+        raise ValidationError({"error":"error on connecting into db source"})
 
 
 @shared_task

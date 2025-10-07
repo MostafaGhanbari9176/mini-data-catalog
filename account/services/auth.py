@@ -22,7 +22,7 @@ def log_in_confirm(request: Request):
     email: str = serializer.validated_data["email"]  # type: ignore
     otp: str = serializer.validated_data["otp"]  # type: ignore
     if not otp_is_valid(email, otp):
-        raise ValidationError(detail="otp is not valid or expired")
+        raise ValidationError({"error":"otp is not valid or expired"})
 
     # creating user if user not exists
     UserService.create_user_nx(email)
@@ -53,7 +53,7 @@ def otp_is_valid(email, otp) -> bool:
 
 def send_otp(email):
     if otp_is_limited(email):
-        raise ValidationError("OTP generating Limitation")
+        raise ValidationError({"error": "OTP generating Limitation"})
 
     otp = generate_otp()
 
@@ -91,7 +91,7 @@ def generate_otp() -> str:
 def generate_token_pair(email) -> dict[str, str]:
     user = UserService.get_user(email)
     if user is None:
-        raise ValidationError("something is go wrong")
+        raise ValidationError({"error":"something is go wrong"})
 
     refresh = tokens.RefreshToken.for_user(user)  # type: ignore
 

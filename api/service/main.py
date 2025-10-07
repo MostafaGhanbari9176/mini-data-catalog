@@ -34,13 +34,13 @@ def validate_file(request: Request) -> UploadedFile:
 
     file = request.FILES.get("file")  # type: ignore
     if not file:
-        raise ValidationError("Please upload a file.")
+        raise ValidationError({"error":"Please upload a file."})
 
     file_type = file.name.split(".")[-1].lower()
 
     if file_type not in allowed_file_types:
         raise ValidationError(
-            f"Invalid file type: {file_type}, Only {allowed_file_types.append(",")} allowed."
+            {"error":f"Invalid file type: {file_type}, Only {allowed_file_types.append(",")} allowed."}
         )
 
     return file

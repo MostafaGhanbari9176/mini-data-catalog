@@ -32,9 +32,9 @@ class DatabaseConnectionSerializer(serializers.Serializer):
         if data["db_type"] == "postgres" and not (
             data.get("dbname") and data.get("host") and data.get("port")
         ):
-            raise serializers.ValidationError("Postgres requires 'dbname' field.")
+            raise serializers.ValidationError({"error":"Postgres requires 'dbname' field."})
         if data["db_type"] == "oracle" and not (
             data.get("dsn") or (data.get("host") and data.get("port"))
         ):
-            raise serializers.ValidationError("Oracle requires 'dsn' or host+port.")
+            raise serializers.ValidationError({"error":"Oracle requires 'dsn' or host+port."})
         return data
