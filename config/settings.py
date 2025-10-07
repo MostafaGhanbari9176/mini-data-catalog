@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,34 +22,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4apj8&+g@41cc(*+)jt2b!zgmtx6mqdvt(4d)j2j4a*jh%%9^7'
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Celery
-
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT')}/0"
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 # Email
 ADMINS = [
-    ('mostafa', 'mostafaghanbari9176@gmail.com'),
+    ('admin', config('ADMIN_EMAIL')),
 ]
 # Use Django's SMTP backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Postfix server details
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25         
-EMAIL_HOST_USER = 'root'    
-EMAIL_HOST_PASSWORD = '1234'
-EMAIL_USE_TLS = False   
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 
 # logging
@@ -95,8 +95,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=config("ACCESS_TOKEN_LIFETIME", cast=int)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=config("REFRESH_TOKEN_LIFETIME", cast=int)),
+    "ALGORITHM": config("JWT_ALGORITHM", default="HS256"),
+    "SIGNING_KEY": config("JWT_SIGNING_KEY", default=SECRET_KEY),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
@@ -154,11 +156,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'data_catalog',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
-        'PORT': '5433'
+        'NAME': config("DB_NAME"),
+        'USER': config("DB_USER"),
+        'PASSWORD': config("DB_PASSWORD"),
+        'HOST': config("DB_HOST"),
+        'PORT': config("DB_PORT"),
     }
 }
 

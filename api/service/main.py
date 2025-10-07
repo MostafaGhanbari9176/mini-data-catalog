@@ -5,8 +5,9 @@ from api.serializer import ETLTablesSerializer
 from api.models import ETLNames
 from django.core.files.uploadedfile import UploadedFile
 import os
+from decouple import config
 
-upload_path = "/tmp/mini_data_catalog/uploads/"
+upload_path = config("TMP_FILE_PATH", default="/tmp/uploads/")
 
 
 def get_etl_tables(etl_name: str) -> ETLTablesSerializer:
@@ -18,7 +19,7 @@ def get_etl_tables(etl_name: str) -> ETLTablesSerializer:
 def store_data_file(request: Request) -> str:
     file = validate_file(request)
 
-    os.makedirs(upload_path, exist_ok=True)
+    os.makedirs(upload_path, exist_ok=True) # type: ignore
 
     file_path = f"{upload_path}{uuid.uuid4()}_{file.name}"
     with open(file_path, "wb") as f:
