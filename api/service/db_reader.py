@@ -5,6 +5,9 @@ from rest_framework.request import Request
 from django.db import transaction
 from api.models import ETLNames, SchemaNames, TableNames, ETLTableRel
 from rest_framework.exceptions import ValidationError
+from celery import shared_task
+from utils import utils
+from django.utils import timezone
 
 
 def read_data_from_db(request: Request):
@@ -12,19 +15,33 @@ def read_data_from_db(request: Request):
     serializer.is_valid(raise_exception=True)
     input = serializer.validated_data
 
-    result: list[tuple[str, str]] = []
-
     try:
+        # first we create a temp connection for validating the connection info
+        # for returning fine response
         connection = make_connection(input)  # type: ignore
+        connection.close()    
+        # then working with db in the background
+        read_and_store_data.delay(input)  # type: ignore
+    except:
+        raise ValidationError("error on connecting into db source")
 
-        if input["db_type"] == "postgres":  # type: ignore
+
+@shared_task
+def read_and_store_data(input):
+    result: list[tuple[str, str]] = []
+    try:
+        connection = make_connection(input)
+
+        if input["db_type"] == "postgres":
             result = fetch_postgres_data(connection)
         else:
             result = fetch_oracle_data(connection)
 
         store_result(result, input["etl_name"])  # type: ignore
     except:
-        raise ValidationError("error on connecting into db source")
+        utils.app_logger.error(
+            f"{timezone.now()} error on reading data from db: {input.get("dbname")}"
+        )
 
 
 @transaction.atomic
