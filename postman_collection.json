@@ -1,0 +1,764 @@
+{
+	"info": {
+		"_postman_id": "8ede2b4c-3c8b-4a5d-937f-eaef02ea5e74",
+		"name": "Mini Data Catalog API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3060890",
+		"_collection_link": "https://www.postman.com/blue-capsule-887187/workspace/tata-mostafaghanbari-sample-project/collection/3060890-8ede2b4c-3c8b-4a5d-937f-eaef02ea5e74?action=share&source=collection_link&creator=3060890"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 202\", function () {",
+							"    pm.expect(pm.response.code).to.eql(202);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has valid Content-Type of application/json\", function () {",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response message is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response adheres to the expected schema format\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('message').that.is.a('string');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"e@ma.il\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/account/log-in/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"account",
+						"log-in",
+						""
+					]
+				},
+				"description": "use this endpoint for signing-up and signing-in"
+			},
+			"response": [
+				{
+					"name": "login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"e@ma.il\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/account/log-in/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"account",
+								"log-in",
+								""
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 Oct 2025 21:31:03 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.12.3"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "26"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"otp was sent\"\n}"
+				}
+			]
+		},
+		{
+			"name": "login confirmation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"e@ma.il\",\n    \"otp\":\"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/account/log-in/confirm/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"account",
+						"log-in",
+						"confirm",
+						""
+					]
+				},
+				"description": "use this endpoint for validation OTP and receive api Tokens. the OTP is hardcode and it is 123456.  \nafter success validation and receiving the OTP, the OTP is invalidated not working until you request another one."
+			},
+			"response": [
+				{
+					"name": "login confirmation",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"e@ma.il\",\n    \"otp\":123456\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/account/log-in/confirm/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"account",
+								"log-in",
+								"confirm",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 Oct 2025 21:31:51 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.12.3"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "489"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"refresh\": \"{{vault:json-web-token}}\",\n    \"access\": \"{{vault:json-web-token}}\"\n}"
+				}
+			]
+		},
+		{
+			"name": "refresh",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"refresh\":\"{{vault:json-web-token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/account/refresh/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"account",
+						"refresh",
+						""
+					]
+				},
+				"description": "use this api for refreshing token pair."
+			},
+			"response": [
+				{
+					"name": "refresh",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\":\"{{vault:json-web-token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/account/refresh/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"account",
+								"refresh",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 Oct 2025 21:39:24 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.12.3"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "489"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access\": \"{{vault:json-web-token}}\",\n    \"refresh\": \"{{vault:json-web-token}}\"\n}"
+				}
+			]
+		},
+		{
+			"name": "upload file",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{vault:json-web-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/mostafa/Documents/tata/test.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/data/file/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"data",
+						"file",
+						""
+					]
+				},
+				"description": "use this endpoint for uploading csv and json file. this api parse and store file content in background by using celery.  \nexample of csv file content:  \netl_name,schema_name,table_name  \nETL1,Sales,sales_orders  \nETL1,Sales,sales_customers  \nETL1,Finance,finance_reports  \nETL2,Marketing,marketing_campaigns  \nETL2,Marketing,marketing_leads  \nETL3,HR,employees  \nETL3,HR,salaries  \nETL3,Finance,payroll"
+			},
+			"response": [
+				{
+					"name": "upload file",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{vault:json-web-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/mostafa/Documents/tata/test.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/data/file/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"data",
+								"file",
+								""
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "gunicorn"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 07 Oct 2025 21:43:28 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"file uploaded successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "database connection",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{vault:json-web-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"db_type\": \"postgres\",\n    \"host\": \"localhost\",\n    \"port\": 5433,\n    \"dbname\": \"data_catalog\",\n    \"user\": \"root\",\n    \"password\": \"1234\",\n    \"etl_name\": \"ETL90\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/data/database/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"data",
+						"database",
+						""
+					]
+				},
+				"description": "use this endpoint for reading data directly from databases.  \nthis api read data from database in background."
+			},
+			"response": [
+				{
+					"name": "database connection",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{vault:json-web-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"db_type\": \"postgres\",\n    \"host\": \"localhost\",\n    \"port\": 5433,\n    \"dbname\": \"data_catalog\",\n    \"user\": \"root\",\n    \"password\": \"1234\",\n    \"etl_name\": \"ETL90\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/data/database/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"data",
+								"database",
+								""
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 Oct 2025 22:03:51 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.12.3"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"data was read successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "ETL tables",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{vault:json-web-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/etl/:etl_name/tables/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"etl",
+						":etl_name",
+						"tables",
+						""
+					],
+					"variable": [
+						{
+							"key": "etl_name",
+							"value": "ETL1"
+						}
+					]
+				},
+				"description": "use this endpoint for receiving a ETL associated tables."
+			},
+			"response": [
+				{
+					"name": "ETL tables",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{vault:json-web-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "127.0.0.1:8000/api/etl/:etl_name/tables/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"etl",
+								":etl_name",
+								"tables",
+								""
+							],
+							"variable": [
+								{
+									"key": "etl_name",
+									"value": "ETL1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 Oct 2025 22:09:25 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.12.3"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "GET, HEAD, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "157"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"ETL1\",\n    \"tables\": [\n        {\n            \"name\": \"sales_orders\",\n            \"schema\": \"Sales\"\n        },\n        {\n            \"name\": \"sales_customers\",\n            \"schema\": \"Sales\"\n        },\n        {\n            \"name\": \"finance_reports\",\n            \"schema\": \"Finance\"\n        }\n    ]\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "127.0.0.1:8000",
+			"type": "default"
+		}
+	]
+}

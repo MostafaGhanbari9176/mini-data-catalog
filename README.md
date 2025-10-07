@@ -93,3 +93,4 @@ docker-compose up -d
 ## Postman Collection
 - A postman_collection.json is included for testing all endpoints.
 - Use it to verify functionality and response correctness.
+- [live API documentation](https://www.postman.com/blue-capsule-887187/tata-mostafaghanbari-sample-project/documentation/h4f0wql/mini-data-catalog-api)
