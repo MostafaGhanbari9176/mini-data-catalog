@@ -1,7 +1,7 @@
 import logging
 from django.utils import timezone
 
-logger = logging.getLogger("django.request")
+logger = logging.getLogger("application")
 
 
 class Non2xxLoggerMiddleware:
