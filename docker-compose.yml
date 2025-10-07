@@ -35,7 +35,9 @@ services:
       - backend
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfile.application
     container_name: mini_data_catalog
     volumes:
       - .:/app
@@ -51,9 +53,10 @@ services:
       - backend
 
   celery:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfile.celery
     container_name: mini_data_catalog_celery
-    command: celery -A config worker --loglevel=info
     volumes:
       - .:/app
     env_file:
