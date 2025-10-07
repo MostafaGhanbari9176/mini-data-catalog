@@ -1,10 +1,5 @@
 from django.db import models
 
-
-class User(models.Model):
-    email = models.EmailField(unique=True)
-
-
 class OTP(models.Model):
     email = models.EmailField(primary_key=True)
     otp = models.CharField(max_length=6)
