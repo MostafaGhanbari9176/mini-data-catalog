@@ -4,6 +4,7 @@ from api.serializer import DatabaseConnectionSerializer
 from rest_framework.request import Request
 from django.db import transaction
 from api.models import ETLNames, SchemaNames, TableNames, ETLTableRel
+from rest_framework.exceptions import ValidationError
 
 
 def read_data_from_db(request: Request):
@@ -13,12 +14,17 @@ def read_data_from_db(request: Request):
 
     result: list[tuple[str, str]] = []
 
-    if input["db_type"] == "postgres":  # type: ignore
-        result = fetch_postgres_tables(input["host"], input["port"], input["dbname"], input["user"], input["password"])  # type: ignore
-    else:
-        result = fetch_oracle_tables(input["dsn"], input["host"], input["port"], input["dbname"], input["user"], input["password"])  # type: ignore
+    try:
+        connection = make_connection(input)  # type: ignore
 
-    store_result(result, input["etl_name"])  # type: ignore
+        if input["db_type"] == "postgres":  # type: ignore
+            result = fetch_postgres_data(connection)
+        else:
+            result = fetch_oracle_data(connection)
+
+        store_result(result, input["etl_name"])  # type: ignore
+    except:
+        raise ValidationError("error on connecting into db source")
 
 
 @transaction.atomic
@@ -32,11 +38,27 @@ def store_result(result, etl_name):
         ETLTableRel.objects.get_or_create(etl=etl_obj, table=table_obj)
 
 
-def fetch_postgres_tables(host, port, dbname, user, password):
-    conn = psycopg2.connect(
-        host=host, port=port, dbname=dbname, user=user, password=password
-    )
-    cursor = conn.cursor()
+def make_connection(input: dict):
+    db_type = input.get("db_type")
+    dsn = input.get("dsn")
+    host = input.get("host")
+    port = input.get("port")
+    dbname = input.get("dbname")
+    user = input.get("user")
+    password = input.get("password")
+
+    if db_type == "postgres":
+        return psycopg2.connect(
+            host=host, port=port, dbname=dbname, user=user, password=password
+        )
+    else:
+        if not dsn:
+            dsn = oracledb.makedsn(host, port, service_name=dbname)  # type: ignore
+        return oracledb.connect(user=user, password=password, dsn=dsn)
+
+
+def fetch_postgres_data(connection):
+    cursor = connection.cursor()
     cursor.execute(
         """
         SELECT table_schema, table_name
@@ -46,16 +68,12 @@ def fetch_postgres_tables(host, port, dbname, user, password):
     )
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    connection.close()
     return results
 
 
-def fetch_oracle_tables(dsn, host, port, dbname, user, password):
-    if not dsn:
-        dsn = oracledb.makedsn(host, port, service_name=dbname)
-
-    conn = oracledb.connect(user=user, password=password, dsn=dsn)
-    cursor = conn.cursor()
+def fetch_oracle_data(connection):
+    cursor = connection.cursor()
     cursor.execute(
         """
         SELECT owner, table_name
@@ -64,5 +82,5 @@ def fetch_oracle_tables(dsn, host, port, dbname, user, password):
     )
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    connection.close()
     return results
