@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import FetchETLTables, UploadDataFile, DataSource
+from .views import *
 
 urlpatterns = [
-    path("etl/<str:etl_name>/tables/", FetchETLTables.as_view(), name="etl-tables"),
-    path("data/file/", UploadDataFile.as_view(), name="upload-file"),
-    path("data/database/", DataSource.as_view(), name="data-source"),
+    path("etl/<str:etl_name>/tables/", fetch_etl_tables, name="etl-tables"),
+    path("data/file/", upload_data_file, name="upload-file"),
+    path("data/database/", data_source, name="data-source"),
 ]

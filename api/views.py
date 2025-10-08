@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from .service import (
@@ -10,33 +10,30 @@ from .service import (
 from .models import ETLNames
 
 
-class FetchETLTables(APIView):
-    def get(self, request, etl_name: str):
-        try:
-            serializer = MainService.get_etl_tables(etl_name)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+@api_view(["GET"])
+def fetch_etl_tables(request: Request, etl_name: str):
+    try:
+        serializer = MainService.get_etl_tables(etl_name)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except ETLNames.DoesNotExist:
-            return Response(
-                {"message": "etl not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+    except ETLNames.DoesNotExist:
+        return Response({"message": "etl not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class UploadDataFile(APIView):
-    def post(self, request: Request):
-        file_path = MainService.store_data_file(request)
+@api_view(["POST"])
+def upload_data_file(request: Request):
+    file_path = MainService.store_data_file(request)
+    FileService.parse_file.delay(file_path)  # type: ignore
 
-        FileService.parse_file.delay(file_path) # type: ignore
+    return Response(
+        {"message": "file uploaded successfully"}, status=status.HTTP_201_CREATED
+    )
 
-        return Response(
-            {"message": "file uploaded successfully"}, status=status.HTTP_201_CREATED
-        )
+# for reading data from a live database
+@api_view(["POST"])
+def data_source(request: Request):
+    DBService.read_data_from_db(request)
 
-
-class DataSource(APIView):
-    def post(self, request):
-        DBService.read_data_from_db(request)
-
-        return Response(
-            {"message": "data was read successfully"}, status=status.HTTP_201_CREATED
-        )
+    return Response(
+        {"message": "data was read successfully"}, status=status.HTTP_201_CREATED
+    )
